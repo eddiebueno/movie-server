@@ -1,0 +1,7 @@
+CREATE TABLE  users (
+  id SERIAL PRIMARY KEY,
+  user_name TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  date_create TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  date_modified TIMESTAMP WITH TIME ZONE
+);
