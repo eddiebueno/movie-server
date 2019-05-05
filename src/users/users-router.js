@@ -18,14 +18,12 @@ usersRouter
     
     if (passwordError)
       return res.status(400).json({ error: passwordError });
-    console.log('Still here');
     
     UsersService.hasUserWithUserName(
       req.app.get('db'),
       user_name
     )
       .then(hasUserWithUserName => {
-        console.log('checking user name');
         if (hasUserWithUserName)
           return res.status(400).json({ error: 'Username already taken' });
         
@@ -34,7 +32,6 @@ usersRouter
             const newUser = {
               user_name,
               password:hashedPassword,
-              date_created: 'now()',
             };
               
             return UsersService.insertUser(
