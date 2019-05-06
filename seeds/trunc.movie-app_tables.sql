@@ -1,6 +1,4 @@
 TRUNCATE
-  movies,
   users,
-  folders,
-  folders_movies
+  reviews
   RESTART IDENTITY CASCADE;
