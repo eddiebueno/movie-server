@@ -32,6 +32,26 @@ const ReviewsService = {
       .first();
   },
 
+  getReviewsForUser(db,user_id){
+    return db
+      .from('reviews as r')
+      .select('*')
+      .where('r.user_id',user_id);
+  },
+
+  getAllReviews(db){
+    return db
+      .from('reviews as r')
+      .select('*');
+  },
+  
+  getReviewsForMovie(db,movie_id){
+    return db
+      .from('reviews as r')
+      .select('*')
+      .where('r.movie_id',movie_id);
+  },
+
   insertReview(db, newReview){
     return db
       .insert(newReview)
@@ -40,8 +60,11 @@ const ReviewsService = {
       .then(([review])=> review)
       .then(review=>ReviewsService.getById(db,review.id));
   },
-
+  serializeReviews(reviews){
+    return reviews.map(this.serializedReview);
+  },
   serializedReview(review){
+    console.log(review);
     return{
       id:review.id,
       rating: review.rating,

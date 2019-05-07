@@ -29,7 +29,29 @@ reviewsRouter
       .then(review=>{
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${review.id}`)).json(ReviewsService.serializedReview(review));
+          .location(path.posix.join(req.originalUrl)).json(ReviewsService.serializedReview(review));
+      })
+      .catch(next);
+  });
+
+
+
+reviewsRouter
+  .route('/')
+  .get((req,res,next)=>{
+    ReviewsService.getAllReviews(req.app.get('db'))
+      .then(reviews=>{
+        res.json(ReviewsService.serializeReviews(reviews));
+      })
+      .catch(next);
+  });
+
+reviewsRouter
+  .route('/:movie_id')
+  .get((req,res,next)=>{
+    ReviewsService.getReviewsForMovie(req.app.get('db'),req.params.movie_id)
+      .then(reviews=>{
+        return res.json(ReviewsService.serializeReviews(reviews));
       })
       .catch(next);
   });

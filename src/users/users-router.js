@@ -2,6 +2,8 @@
 const express = require('express');
 const path = require('path');
 const UsersService = require('./users-service');
+const ReviewsService = require('../reviews/reviews-service');
+const {requireAuth} = require('../middleware/jwt-auth');
 const usersRouter = express.Router();
 const jsonBodyParser = express.json();
 
@@ -46,6 +48,19 @@ usersRouter
               });
           });
         
+      })
+      .catch(next);
+  });
+
+usersRouter
+  .route('/:user_id/reviews')
+  .all(requireAuth)
+  .get((req,res,next)=>{
+    ReviewsService.getReviewsForUser(
+      req.app.get('db'),req.params.user_id
+    )
+      .then(reviews=>{
+        res.json(ReviewsService.serializeReviews(reviews));
       })
       .catch(next);
   });
