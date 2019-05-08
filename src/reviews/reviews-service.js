@@ -42,14 +42,27 @@ const ReviewsService = {
   getAllReviews(db){
     return db
       .from('reviews as r')
-      .select('*');
+      .select('*')
+      .leftJoin('users as u',
+        'r.user_id',
+        'u.id'
+      );
   },
   
   getReviewsForMovie(db,movie_id){
     return db
       .from('reviews as r')
-      .select('*')
-      .where('r.movie_id',movie_id);
+      .select('r.id',
+        'r.movie_id',
+        'r.rating',
+        'r.text',
+        'r.user_id',
+        ...userFields)
+      .where('r.movie_id',movie_id)
+      .join('users AS u',
+        'r.user_id',
+        '=',
+        'u.id');
   },
 
   insertReview(db, newReview){
@@ -64,17 +77,22 @@ const ReviewsService = {
     return reviews.map(this.serializedReview);
   },
   serializedReview(review){
-    console.log(review);
     return{
       id:review.id,
       rating: review.rating,
       text: xss(review.text),
       movie_id: review.movie_id,
       date_created: review.date_created,
-      user: review.user || {},
+      user: review.user_id || {},
+      user_name: review['user:user_name'] || ''
     };
   }
 
 };
+
+const userFields = [
+  'u.id AS user:id',
+  'u.user_name AS user:user_name',
+];
 
 module.exports = ReviewsService;
